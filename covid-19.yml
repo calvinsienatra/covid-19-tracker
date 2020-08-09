@@ -1,5 +1,6 @@
 name: covid-19
 channels:
+  - anaconda
   - defaults
 dependencies:
   - blas=1.0=mkl
@@ -7,17 +8,22 @@ dependencies:
   - certifi=2020.6.20=py38_0
   - cffi=1.14.0=py38hc512035_1
   - chardet=3.0.4=py38_1003
+  - click=7.1.2=py_0
   - conda-package-handling=1.6.1=py38h1de35cc_0
   - cryptography=2.9.2=py38ha12b0ac_0
   - cycler=0.10.0=py38_0
+  - flask=1.1.2=py_0
   - freetype=2.10.2=ha233b18_0
   - idna=2.9=py_1
   - intel-openmp=2019.4=233
+  - itsdangerous=1.1.0=py_0
+  - jinja2=2.11.2=py_0
   - kiwisolver=1.2.0=py38h04f5b5a_0
   - libcxx=10.0.0=1
   - libedit=3.1.20181209=hb402a30_0
   - libffi=3.3=h0a44026_1
   - libpng=1.6.37=ha441bb4_0
+  - markupsafe=1.1.1=py38h1de35cc_1
   - matplotlib=3.2.2=0
   - matplotlib-base=3.2.2=py38h5670ca0_0
   - mkl=2019.4=233
@@ -47,9 +53,10 @@ dependencies:
   - tornado=6.0.4=py38h1de35cc_1
   - tqdm=4.46.0=py_0
   - urllib3=1.25.8=py38_0
+  - werkzeug=1.0.1=py_0
   - wheel=0.34.2=py38_0
   - xz=5.2.5=h1de35cc_0
   - yaml=0.1.7=hc338f04_2
   - zlib=1.2.11=h1de35cc_3
-prefix: /opt/miniconda3/envs/covid-19
+prefix: /Users/calvinsienatra/opt/miniconda3/envs/covid-19
 
