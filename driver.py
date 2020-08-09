@@ -158,7 +158,7 @@ def get_three_points_from_line(xy1, xy2):
 	return (xy_final_1, xy_final_2, xy_final_3)
 
 # Run the k-means algorithm
-def k_means_custom(k, dataset, centers):
+def k_means_custom(k, dataset, centers): # Dataset contains county names
 	if(len(centers) != k):
 		raise ValueError("Number of centers should be the same as k")
 
@@ -167,6 +167,7 @@ def k_means_custom(k, dataset, centers):
 	for row in dataset:
 		if(math.isnan(dataset[row][0])):
 			del clean_dataset[row]
+
 
 	# Initialize clusters with random unique initial center positions
 	k_classified = {}
@@ -183,10 +184,10 @@ def k_means_custom(k, dataset, centers):
 		iteration += 1
 		for county in clean_dataset:
 			point_coord = clean_dataset[county]
-			for cluster in tmp_classified:
+			for cluster in tmp_classified: # Have to replace min calculations to make it more efficient
 				tmp_classified[cluster] = get_distance(point_coord, k_classified[cluster]["center"])
 
-			min_val = min(tmp_classified.values())
+			min_val = min(tmp_classified.values()) # Replace with in for-loop minimum finder
 
 			cluster_name = ""
 			for cluster in tmp_classified:
@@ -250,12 +251,14 @@ def calculate_category_a(clean_x, clean_y, pd):
 	# Run k-means
 	k_classified = k_means_custom(3, closest, (xy1, xy2, xy3))
 
-	# List clusters
+	# List clusters with only points
 	clus_1 = list(k_classified['cluster_1']['points'].values())
 	clus_2 = list(k_classified['cluster_2']['points'].values())
 	clus_3 = list(k_classified['cluster_3']['points'].values())
 
-	return (clus_1, clus_2, clus_3, clean, xmax, ymax)
+	clus_a_name = [k_classified['cluster_1']['points'], k_classified['cluster_2']['points'], k_classified['cluster_3']['points']]
+
+	return (clus_1, clus_2, clus_3, clus_a_name, clean, xmax, ymax)
 
 # Run k-means for Category B
 def calculate_category_b(clean_x, clean_y, clean, xmax, ymax):
@@ -293,7 +296,7 @@ def calculate_category_b(clean_x, clean_y, clean, xmax, ymax):
 	# Run k-means
 	k_classified = k_means_custom(6, closest, (xy1_2, xy2_2, xy3_2, xy4_2, xy5_2, xy6_2))
 
-	# List clusters
+	# List clusters with only points
 	clus_1 = list(k_classified['cluster_1']['points'].values())
 	clus_2 = list(k_classified['cluster_2']['points'].values())
 	clus_3 = list(k_classified['cluster_3']['points'].values())
@@ -301,7 +304,9 @@ def calculate_category_b(clean_x, clean_y, clean, xmax, ymax):
 	clus_5 = list(k_classified['cluster_5']['points'].values())
 	clus_6 = list(k_classified['cluster_6']['points'].values())
 
-	return (clus_1, clus_2, clus_3, clus_4, clus_5, clus_6, clean)
+	clus_b_name = [k_classified['cluster_1']['points'], k_classified['cluster_2']['points'], k_classified['cluster_3']['points'], k_classified['cluster_4']['points'], k_classified['cluster_5']['points'], k_classified['cluster_6']['points']]
+
+	return (clus_1, clus_2, clus_3, clus_4, clus_5, clus_6, clus_b_name, clean)
 
 # Run k-means for Category C
 def calculate_category_c(clean_x, clean_y, clean, xmax, ymax):
@@ -330,11 +335,13 @@ def calculate_category_c(clean_x, clean_y, clean, xmax, ymax):
 	# Run k-means
 	k_classified = k_means_custom(2, closest, (xy1_3, xy2_3))
 
-	# List clusters
+	# List clusters with only points
 	clus_1 = list(k_classified['cluster_1']['points'].values())
 	clus_2 = list(k_classified['cluster_2']['points'].values())
 
-	return (clus_1, clus_2, clean)
+	clus_c_name = [k_classified['cluster_1']['points'], k_classified['cluster_2']['points']]
+
+	return (clus_1, clus_2, clus_c_name, clean)
 
 # Plot all clusters
 def plot_clusters(clus_a_1, clus_a_2, clus_a_3, clus_b_1, clus_b_2, clus_b_3, clus_b_4, clus_b_5, clus_b_6, clus_c_1, clus_c_2):
@@ -398,14 +405,24 @@ def plot_clusters(clus_a_1, clus_a_2, clus_a_3, clus_b_1, clus_b_2, clus_b_3, cl
 
 	plt.show()
 
+# Return final k-means with county names
+def get_final_kmeans():
+	(clean_x, clean_y, pd) = clean_process_data(request_timeseries())
+
+	(clus_a_1, clus_a_2, clus_a_3, clus_a_name, clean, xmax, ymax) = calculate_category_a(clean_x, clean_y, pd)
+	(clus_b_1, clus_b_2, clus_b_3, clus_b_4, clus_b_5, clus_b_6, clus_b_name, clean) = calculate_category_b(list(i[0] for i in clean), list(i[1] for i in clean), clean, xmax, ymax)
+	(clus_c_1, clus_c_2, clus_c_name, clean) = calculate_category_c(list(i[0] for i in clean), list(i[1] for i in clean), clean, xmax, ymax)
+
+	return {"clus_a_1": clus_a_name[0], "clus_a_2": clus_a_name[1], "clus_a_3": clus_a_name[2], "clus_b_1": clus_b_name[0], "clus_b_2": clus_b_name[1], "clus_b_3": clus_b_name[2], "clus_b_4": clus_b_name[3], "clus_b_5": clus_b_name[4], "clus_b_6": clus_b_name[5], "clus_c_1": clus_c_name[0], "clus_c_2": clus_c_name[1]}
+
 
 # Main Driver
 if __name__ == '__main__':
 
 	(clean_x, clean_y, pd) = clean_process_data(request_timeseries())
 
-	(clus_a_1, clus_a_2, clus_a_3, clean, xmax, ymax) = calculate_category_a(clean_x, clean_y, pd)
-	(clus_b_1, clus_b_2, clus_b_3, clus_b_4, clus_b_5, clus_b_6, clean) = calculate_category_b(list(i[0] for i in clean), list(i[1] for i in clean), clean, xmax, ymax)
-	(clus_c_1, clus_c_2, clean) = calculate_category_c(list(i[0] for i in clean), list(i[1] for i in clean), clean, xmax, ymax)
+	(clus_a_1, clus_a_2, clus_a_3, clus_a_name, clean, xmax, ymax) = calculate_category_a(clean_x, clean_y, pd)
+	(clus_b_1, clus_b_2, clus_b_3, clus_b_4, clus_b_5, clus_b_6, clus_b_name, clean) = calculate_category_b(list(i[0] for i in clean), list(i[1] for i in clean), clean, xmax, ymax)
+	(clus_c_1, clus_c_2, clus_c_name, clean) = calculate_category_c(list(i[0] for i in clean), list(i[1] for i in clean), clean, xmax, ymax)
 
 	plot_clusters(clus_a_1, clus_a_2, clus_a_3, clus_b_1, clus_b_2, clus_b_3, clus_b_4, clus_b_5, clus_b_6, clus_c_1, clus_c_2)
