@@ -1,5 +1,6 @@
 name: covid-19
 channels:
+  - conda-forge
   - anaconda
   - defaults
 dependencies:
@@ -31,6 +32,7 @@ dependencies:
   - mkl_fft=1.1.0=py38hc64f4ea_0
   - mkl_random=1.1.1=py38h959d312_0
   - ncurses=6.2=h0a44026_1
+  - nodejs=10.13.0=h0a44026_0
   - numpy=1.19.1=py38h3b9f5b6_0
   - numpy-base=1.19.1=py38hcfb5961_0
   - openssl=1.1.1g=h1de35cc_0
@@ -43,6 +45,7 @@ dependencies:
   - python=3.8.3=h26836e1_1
   - python-dateutil=2.8.1=py_0
   - python.app=2=py38_10
+  - python_abi=3.8=1_cp38
   - readline=8.0=h1de35cc_0
   - requests=2.23.0=py38_0
   - ruamel_yaml=0.15.87=py38h1de35cc_0
@@ -57,6 +60,7 @@ dependencies:
   - wheel=0.34.2=py38_0
   - xz=5.2.5=h1de35cc_0
   - yaml=0.1.7=hc338f04_2
+  - yarn=1.22.4=0
   - zlib=1.2.11=h1de35cc_3
 prefix: /Users/calvinsienatra/opt/miniconda3/envs/covid-19
 
